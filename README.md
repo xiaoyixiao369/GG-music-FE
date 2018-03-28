@@ -2,6 +2,8 @@
 
 > Gordon的全民K歌歌单
 
+Online at [39.108.6.47](http://39.108.6.47) or [ggmusic.ml/](http://ggmusic.ml/)
+
 ## Build Setup
 
 ``` bash
