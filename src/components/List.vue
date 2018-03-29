@@ -1,13 +1,15 @@
 <template>
   <div class="page-tabbar">
     <div class="page-wrap">
-      <mt-header fixed title="Gordon Music"></mt-header>
+      <mt-header fixed :title="`${singer.name} Music`">
+        <mt-button icon="more" slot="right" @click="singerInfo"></mt-button>
+      </mt-header>
       <div style="height: 40px;"></div>
 
       <mt-tab-container class="page-tabbar-container" v-model="selected">
-        <mt-tab-container-item id="songList">
+        <mt-tab-container-item id="menuSongList">
           <div v-for="item in list" :key="item.shareid">
-            <mt-cell :title="item.title === '' ? '-_-未获取到歌曲名称' : item.title" :to="`/song?shareid=${item.shareid}&avatar=${item.avatar}`" is-link>
+            <mt-cell :title="item.title === '' ? '-_-未获取到歌曲名称' : item.title" :to="`/song?shareid=${item.shareid}`" is-link>
               <img slot="icon" :src="item.avatar" width="24" height="24" style="border-radius: 50%;">
             </mt-cell>
           </div>
@@ -15,7 +17,7 @@
             <mt-button size="small" type="default" v-if="showLoadMoreBtn" @click.native="loadMore">加载更多</mt-button>
           </div>
         </mt-tab-container-item>
-        <mt-tab-container-item id="mine">
+        <mt-tab-container-item id="menuMine">
           <div style="text-align: center; margin-top: 20px;">
             <img style="border-radius: 50%; border: 4px solid rgba(77,78,84,0.46);" src="http://shp.qlogo.cn/ttsing/100267531/100267531/100?ts=0" alt="Gordon">
           </div>
@@ -37,66 +39,85 @@
     </div>
 
     <mt-tabbar v-model="selected" fixed>
-      <mt-tab-item id="songList">
+      <mt-tab-item id="menuSongList">
         <img slot="icon" src="../assets/icon-music.png">
         歌单
       </mt-tab-item>
-      <mt-tab-item id="mine">
+      <mt-tab-item id="menuMine">
         <img slot="icon" src="../assets/icon-mine.png">
-        我的
+        作者
       </mt-tab-item>
     </mt-tabbar>
+    <mt-popup
+      v-model="popupVisible"
+      popup-transition="popup-fade">
+      <div style="width: 600px;text-align: center; padding: 40px 20px;color: rgba(0, 0, 0, 0.6);">
+        <div>
+          <img :src="singer.img" alt="" style="border: 6px solid ghostwhite; border-radius: 50%;">
+        </div>
+        <p>{{singer.songCount}}</p>
+        <p>{{singer.level}}</p>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { Header, Tabbar, Cell, Toast, TabItem, Badge } from 'mint-ui'
+import { Header, Tabbar, Cell, Toast, TabItem, Badge, Indicator, Popup } from 'mint-ui'
 import axios from 'axios'
+import global from '@/components/Global'
 Vue.component(Header.name, Header)
 Vue.component(Tabbar.name, Tabbar)
 Vue.component(TabItem.name, TabItem)
 Vue.component(Cell.name, Cell)
 Vue.component(Badge.name, Badge)
-let page = 1
-const size = 15
-const BASE_DOMAIN = 'http://39.108.6.47:8080'
+Vue.component(Popup.name, Popup)
 
 export default {
   name: 'App',
   created () {
-    this.loadMore()
+    setTimeout(() => {
+      this.showLoadMoreBtn = true
+    }, 1000)
   },
   data () {
     return {
-      list: [],
-      showLoadMoreBtn: true,
-      selected: 'songList'
+      popupVisible: false,
+      singer: global.SINGER,
+      list: global.SONGLIST,
+      showLoadMoreBtn: false,
+      selected: 'menuSongList'
     }
   },
   methods: {
     loadMore () {
-      this.loading = false
-      axios.get(BASE_DOMAIN + '/list', {
+      Indicator.open('加载歌曲中...')
+      axios.get(global.BASE_DOMAIN + '/list', {
         params: {
-          page: page++,
-          size: size
+          uid: global.UID,
+          page: ++global.PAGE,
+          size: global.SIZE
         }
       }).then((res) => {
         const data = res.data
         const list = JSON.parse(data.substring(18, data.length - 1)).data.ugclist
-        if (list.length > 0) {
+        if (list && list.length > 0) {
           for (let i = 0; i < list.length; i++) {
-            this.list.push(list[i])
+            global.SONGLIST.push(list[i])
           }
-          Vue.prototype.songList = this.list
         } else {
           Toast('没有更多歌曲了!')
           this.showLoadMoreBtn = false
         }
+        Indicator.close()
       }).catch((error) => {
+        Indicator.close()
         Toast(error)
       })
+    },
+    singerInfo () {
+      this.popupVisible = true
     }
   }
 }
@@ -104,6 +125,6 @@ export default {
 
 <style>
   .mint-header {
-    background-color: #70727480;
+    background-color: rgba(0, 0, 0, 0.78);
   }
 </style>

@@ -1,0 +1,79 @@
+<script>
+import axios from 'axios'
+import { Indicator, Toast } from 'mint-ui'
+const SONGLIST = []
+let PAGE = 1
+const SIZE = 15
+const BASE_DOMAIN = 'http://localhost:8080'
+// 我自己的歌单UID
+let UID = '639d9d87232a328835'
+// 演唱者信息
+let SINGER = {
+  name: '',
+  img: '',
+  level: '',
+  songCount: ''
+}
+// 兼容其它全民用户的歌单UID
+const search = window.location.search
+if (search !== '') {
+  const query = search.substring(1, search.length).split('=')
+  if (query.length > 0) {
+    const queryMap = new Map()
+    for (let i = 0; i < query.length; i += 2) {
+      queryMap.set(query[i], query[i + 1])
+    }
+    const customeUid = queryMap.get('uid')
+    if (customeUid) UID = customeUid
+  }
+}
+
+// 加载演唱者信息
+axios.get(BASE_DOMAIN + '/songAuthor', {
+  params: {
+    uid: UID
+  }
+}).then((res) => {
+  const data = res.data
+  if (data) {
+    SINGER.name = data.name
+    SINGER.img = data.img
+    SINGER.level = data.level
+    SINGER.songCount = data.songCount
+  }
+}).catch((error) => {
+  Toast(error)
+})
+
+Indicator.open('歌曲加载中...')
+axios.get(BASE_DOMAIN + '/list', {
+  params: {
+    uid: UID,
+    page: PAGE,
+    size: SIZE
+  }
+}).then((res) => {
+  const data = res.data
+  const list = JSON.parse(data.substring(18, data.length - 1)).data.ugclist
+  if (list && list.length > 0) {
+    for (let i = 0; i < list.length; i++) {
+      SONGLIST.push(list[i])
+    }
+  } else {
+    Toast('没有歌曲-_-')
+  }
+  Indicator.close()
+}).catch((error) => {
+  Indicator.close()
+  Toast(error)
+})
+
+export default {
+  SONGLIST,
+  PAGE,
+  SIZE,
+  BASE_DOMAIN,
+  UID,
+  SINGER
+}
+</script>
