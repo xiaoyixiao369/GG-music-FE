@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="song-detail">
   <mt-header fixed :title="`${songInfo.song_name}`">
     <router-link to="/" slot="left">
       <mt-button icon="back">返回</mt-button>
@@ -13,12 +13,37 @@
      <img id="avatar" :src="songInfo.cover"/>
     </div>
   </div>
-  <div id="lyricContainer" style="height: 110px; color:white; text-align: center; overflow-y: scroll; margin-top: 20px; padding:0;" v-html="lyricsLines">
+  <div id="lyricContainer" style="height: 80px; color:white; text-align: center; overflow-y: scroll; margin-top: 20px; padding:0;" v-html="lyricsLines">
   </div>
   <div class="player-container">
     <audio id="audioPlayer" class="player" autoplay :src="songInfo.playurl" controls></audio>
   </div>
-  <div class="bg"></div>
+  <div class="player-controll">
+    <div class="mint-tabbar">
+      <a id="playPrevBtn" class="mint-tab-item">
+        <div class="mint-tab-item-icon">
+          <img src="../assets/prev.png">
+        </div>
+        <div class="mint-tab-item-label">
+        </div>
+      </a>
+      <a id="playBtn" class="mint-tab-item">
+        <div class="mint-tab-item-icon">
+          <img v-if="play" src="../assets/play.png">
+          <img v-if="pause" src="../assets/pause.png">
+        </div> <div class="mint-tab-item-label">
+      </div>
+      </a>
+      <a id="playNextBtn" class="mint-tab-item">
+        <div class="mint-tab-item-icon">
+          <img src="../assets/next.png">
+        </div> <div class="mint-tab-item-label">
+      </div>
+      </a>
+    </div>
+  </div>
+  <div class="bg" v-bind:style="{backgroundImage: 'url(' + songInfo.cover + ')'}"></div>
+  <router-view/>
 </div>
 </template>
 
@@ -26,16 +51,42 @@
 import Vue from 'vue'
 import global from '@/components/Global'
 import axios from 'axios'
-import { Button, Indicator } from 'mint-ui'
+import { Button, Indicator, Toast } from 'mint-ui'
 import '../utils/lyrics'
 Vue.component(Button.name, Button)
 
 export default {
+  mounted () {
+    this.player = document.getElementById('audioPlayer')
+  },
   created () {
+    const that = this
+    // 控制播放上一首或下一首 ture: 下一首 false: 下一首
+    function playCtl (prevOrNext) {
+      const list = []
+      let songs = global.SONGLIST
+      for (let w = 0; w < songs.length; w++) {
+        list.push(songs[w].shareid)
+      }
+      const curSongIndex = list.findIndex(function (value, index, arr) {
+        return value === that.$route.query.shareid
+      })
+      if (curSongIndex < list.length) {
+        const newIdx = prevOrNext ? curSongIndex + 1 : curSongIndex - 1
+        if (list[newIdx]) {
+          that.$router.push('/song?shareid=' + list[newIdx])
+          // location.reload()
+          // that.$router.replace('/song?shareid=' + list[newIdx])
+          // that.$router.go({path: '/song?shareid=' + list[newIdx], query: {shareid: list[newIdx]}})
+        } else {
+          Toast('没有歌曲了')
+        }
+      }
+    }
     Indicator.open('加载歌曲中...')
     axios.get(global.BASE_DOMAIN + '/song', {
       params: {
-        shareId: this.$route.query.shareid
+        shareId: that.$route.query.shareid
       }
     }).then((res) => {
       const data = res.data
@@ -60,7 +111,7 @@ export default {
         }
         this.lyricsLines = lyricsLines.join('')
         const lyricContainer = document.getElementById('lyricContainer')
-        document.getElementById('audioPlayer').addEventListener('timeupdate', function () {
+        that.player.addEventListener('timeupdate', function () {
           const lyricSelected = lrc.select(this.currentTime)
           if (lyricSelected !== undefined) {
             const selectedMetaLyric = lrc.getLyric(lyricSelected)
@@ -69,12 +120,8 @@ export default {
               for (let j = 0; j < lines.length; j++) {
                 if (lines[j].getAttribute('timestamp') === selectedMetaLyric.timestamp + '') {
                   lines[j].className = 'lyric-active'
-                  if (selectedMetaLyric.text.length > 0) {
-                    let y = (j - 1) * 26
-                    if (j % 3 === 0) {
-                      y = y + 26
-                    }
-                    if (y > 2) lyricContainer.scrollTo(0, y - 30)
+                  if (j > 2) {
+                    lyricContainer.scrollTo(0, (Math.floor((lyricContainer.scrollHeight + 40) / lines.length) * j))
                   }
                 } else {
                   lines[j].className = ''
@@ -82,6 +129,29 @@ export default {
               }
             }
           }
+        })
+        that.player.addEventListener('ended', function () {
+          playCtl(true)
+        })
+        // 播放上一首
+        document.getElementById('playPrevBtn').addEventListener('click', function () {
+          playCtl(false)
+        })
+        // 播放或暂停
+        document.getElementById('playBtn').addEventListener('click', function () {
+          if (that.player.paused) {
+            that.play = true
+            that.pause = false
+            that.player.play()
+          } else {
+            that.play = false
+            that.pause = true
+            that.player.pause()
+          }
+        })
+        // 播放下一首
+        document.getElementById('playNextBtn').addEventListener('click', function () {
+          playCtl(true)
         })
       }).catch((error) => {
         Indicator.close()
@@ -95,6 +165,9 @@ export default {
   data () {
     return {
       songInfo: {},
+      payer: {},
+      play: true,
+      pause: false,
       lyricsLines: '歌词加载中...',
       popupVisible: false
     }
@@ -103,13 +176,30 @@ export default {
     getMoreInfo () {
       this.popupVisible = true
     }
+  },
+  watch: {
+    '$route' (to, from) {
+      console.log(to)
+      // this.$router.go(0)
+    }
   }
 }
 </script>
 
 <style>
-.mint-header {
+.song-detail .mint-header {
   background-color: #70727480;
+}
+.song-detail .mint-tabbar {
+  background-size: 100% 0;
+  background-color: #fafafae3;
+}
+.song-detail .mint-tab-item {
+  padding: 20px 0;
+}
+.song-detail .mint-tab-item-icon {
+  width: 48px;
+  height: 48px;
 }
 .bg {
   background: url(../assets/gg-bg.png) center;
@@ -156,12 +246,13 @@ export default {
   left: 0;
   position: fixed;
   z-index: 1;
+  display: none;
 }
 .player {
   width: 100%;
 }
 .lyric-active {
-  color: #727aff;
+  color: #54a5ff;
 }
 #lyricContainer>p {
   margin: 2px 0;
