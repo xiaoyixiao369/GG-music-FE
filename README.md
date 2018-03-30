@@ -1,10 +1,12 @@
 # GG-Music
 
-> 全民K歌播放器
+> 全民K歌播放器 Build with Vue.js
 
-Online at [39.108.6.47](http://39.108.6.47) or [ggmusic.ml/](http://ggmusic.ml/)
+在线体验: [http://198.13.38.21/](http://198.13.38.21/) or [www.ggmusic.ml](http://www.ggmusic.ml/)    
 
-## Build Setup
+Github: [https://github.com/igordonxiao/GG-music-FE](https://github.com/igordonxiao/GG-music-FE)
+
+## 编译
 
 ``` bash
 # install dependencies
@@ -37,3 +39,6 @@ npm run build
 > 例如笔者的全民K歌网页版地址为`http://node.kg.qq.com/personal?uid=639d9d87232a328835`, `UID`则为`639d9d87232a328835`
 
 ## Screenshot
+![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot1.png)
+![](https://github.com/igordonxiao/GG-music-FE/ralsw/master/screenshot/screenshot2.png)
+![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot3.png)
