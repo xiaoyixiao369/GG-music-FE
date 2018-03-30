@@ -18,22 +18,17 @@
           </div>
         </mt-tab-container-item>
         <mt-tab-container-item id="menuMine">
-          <div style="text-align: center; margin-top: 20px;">
-            <img style="border-radius: 50%; border: 4px solid rgba(77,78,84,0.46);" src="http://shp.qlogo.cn/ttsing/100267531/100267531/100?ts=0" alt="Gordon">
-          </div>
           <div style="text-align: center; margin-top: 30px;">
-            <mt-badge type="primary">Gordon</mt-badge>
+            <p><img :src="singer.img" alt="" style="border: 6px solid ghostwhite; border-radius: 50%;"></p>
+            <p><mt-badge type="primary">{{singer.name}}</mt-badge></p>
           </div>
-          <p></p>
-          <p></p>
-          <h4>About Me:</h4>
-          <p>A Web Developer in ChengDu, China</p>
-          <p></p>
-          <p></p>
-          <h4>Contact Me:</h4>
-          <p>Blog: <a href="https://igordonxiao.github.io/">https://igordonxiao.github.io/</a></p>
-          <p>Twitter: <a href="https://twitter.com/igordonxiao">https://twitter.com/igordonxiao</a></p>
-          <p>Github: <a href="https://github.com/igordonxiao">https://github.com/igordonxiao</a></p>
+          <div style="text-align: center; color: rgba(0, 0, 0, 0.6);">
+            <p>{{singer.songCount}}</p>
+            <p>{{singer.level}}</p>
+          </div>
+          <div class="gg-music-info">
+            <a href="https://github.com/igordonxiao/GG-music-FE/">GG－Music</a> made by <a href="https://igordonxiao.github.io/">Gordon</a>
+          </div>
         </mt-tab-container-item>
       </mt-tab-container>
     </div>
@@ -45,7 +40,7 @@
       </mt-tab-item>
       <mt-tab-item id="menuMine">
         <img slot="icon" src="../assets/icon-mine.png">
-        作者
+        歌手
       </mt-tab-item>
     </mt-tabbar>
     <mt-popup
@@ -124,7 +119,16 @@ export default {
 </script>
 
 <style>
-  .mint-header {
-    background-color: rgba(0, 0, 0, 0.78);
-  }
+.mint-header {
+  background-color: rgba(0, 0, 0, 0.78);
+}
+.gg-music-info {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+}
+.gg-music-info a, .gg-music-info a:link, .gg-music-info a:hover, .gg-music-info a:visited{
+  text-decoration: none;
+  color: rgba(128, 128, 128, 0.91);
+}
 </style>
