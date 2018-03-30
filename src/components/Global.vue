@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios'
-import { Indicator, Toast } from 'mint-ui'
+import { Toast } from 'mint-ui'
 const SONGLIST = []
 let PAGE = 1
 const SIZE = 15
@@ -42,29 +42,6 @@ axios.get(BASE_DOMAIN + '/songAuthor', {
     SINGER.songCount = data.songCount
   }
 }).catch((error) => {
-  Toast(error)
-})
-
-Indicator.open('歌曲加载中...')
-axios.get(BASE_DOMAIN + '/list', {
-  params: {
-    uid: UID,
-    page: PAGE,
-    size: SIZE
-  }
-}).then((res) => {
-  const data = res.data
-  const list = JSON.parse(data.substring(18, data.length - 1)).data.ugclist
-  if (list && list.length > 0) {
-    for (let i = 0; i < list.length; i++) {
-      SONGLIST.push(list[i])
-    }
-  } else {
-    Toast('没有歌曲-_-')
-  }
-  Indicator.close()
-}).catch((error) => {
-  Indicator.close()
   Toast(error)
 })
 

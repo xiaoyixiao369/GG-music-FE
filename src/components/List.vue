@@ -72,9 +72,32 @@ Vue.component(Popup.name, Popup)
 export default {
   name: 'App',
   created () {
-    setTimeout(() => {
-      this.showLoadMoreBtn = true
-    }, 1000)
+    const that = this
+    Indicator.open('歌曲加载中...')
+    axios.get(global.BASE_DOMAIN + '/list', {
+      params: {
+        uid: global.UID,
+        page: global.PAGE,
+        size: global.SIZE
+      }
+    }).then((res) => {
+      const data = res.data
+      const list = JSON.parse(data.substring(18, data.length - 1)).data.ugclist
+      if (list && list.length > 0) {
+        for (let i = 0; i < list.length; i++) {
+          global.SONGLIST.push(list[i])
+        }
+        if (global.SONGLIST.length >= global.SIZE) {
+          that.showLoadMoreBtn = true
+        }
+      } else {
+        Toast('没有歌曲-_-')
+      }
+      Indicator.close()
+    }).catch((error) => {
+      Indicator.close()
+      Toast(error)
+    })
   },
   data () {
     return {
