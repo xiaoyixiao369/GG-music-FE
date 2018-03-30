@@ -27,7 +27,7 @@
             <p>{{singer.level}}</p>
           </div>
           <div class="gg-music-info">
-            <a href="https://github.com/igordonxiao/GG-music-FE/">GG－Music</a> made by <a href="https://igordonxiao.github.io/">Gordon</a>
+            <a href="https://github.com/igordonxiao/GG-music-FE/">GG－Music</a> by <a href="https://igordonxiao.github.io/">Gordon</a>
           </div>
         </mt-tab-container-item>
       </mt-tab-container>
