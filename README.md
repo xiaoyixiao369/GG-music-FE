@@ -42,3 +42,15 @@ npm run build
 ![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot1.png)
 ![](https://raw.githubusercontent.com/igordonxiao/GG-music-FE/master/screenshot/screenshot2.png)
 ![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot3.png)
+
+## 已知问题
++ 使用`npm run build`打包后将`dist`部署到`Nginx`下，碟盘无法转动，播放歌曲的`URL`地址拷贝到新的浏览器地址栏中访问会显示404
+
+## 使用`webpack-dev-server`部署
+1. `git clone`源码并安装依赖包`npm install`　　
+2. 使用`nohup npm run dev &`
+
+## `webpack-dev-server`部署的问题
++ 直接使用`IP`访问没有什么问题
++ 使用域名访问遇到`Invalid Header`问题时，需要修改`package.json`文件中`webpack-dev-server --inline --progress --config build/webpack.dev.conf.js`修改为`webpack-dev-server --public [你的域名]  --config build/webpack.dev.conf.js`
++ 使用`nohup npm run dev &`

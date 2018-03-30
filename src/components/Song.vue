@@ -157,6 +157,8 @@ export default {
           // 播放上一首
           document.getElementById('playPrevBtn').addEventListener('click', function (e) {
             playCtl(false)
+            that.play = true
+            that.pause = false
             e.preventDefault()
             e.stopImmediatePropagation()
             e.stopPropagation()
@@ -175,10 +177,15 @@ export default {
               that.isRotate = false
               that.avatar.style.transform = 'rotate(' + Math.floor(Math.random() * 360) + 'deg)'
             }
+            e.preventDefault()
+            e.stopImmediatePropagation()
+            e.stopPropagation()
           })
           // 播放下一首
           document.getElementById('playNextBtn').addEventListener('click', function (e) {
             playCtl(true)
+            that.play = true
+            that.pause = false
             e.preventDefault()
             e.stopImmediatePropagation()
             e.stopPropagation()
