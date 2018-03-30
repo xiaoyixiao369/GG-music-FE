@@ -40,5 +40,5 @@ npm run build
 
 ## Screenshot
 ![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot1.png)
-![](https://github.com/igordonxiao/GG-music-FE/ralsw/master/screenshot/screenshot2.png)
+![](https://raw.githubusercontent.com/igordonxiao/GG-music-FE/master/screenshot/screenshot2.png)
 ![](https://github.com/igordonxiao/GG-music-FE/raw/master/screenshot/screenshot3.png)
