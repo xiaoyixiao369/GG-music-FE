@@ -2,7 +2,7 @@
 
 > 全民K歌播放器 Build with Vue.js
 
-在线体验: [http://198.13.38.21/](http://198.13.38.21/) or [www.ggmusic.ml](http://www.ggmusic.ml/)    
+在线体验: [http://39.108.6.47/](http://39.108.6.47/) or [www.ggmusic.ml](http://www.ggmusic.ml/)    
 
 Github: [https://github.com/igordonxiao/GG-music-FE](https://github.com/igordonxiao/GG-music-FE)
 
