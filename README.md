@@ -1,6 +1,6 @@
 # GG-Music
 
-> 全民K歌播放器 Build by Vue.js
+> 全民K歌播放器 Build with Vue.js
 
 在线体验: [http://39.108.6.47/](http://39.108.6.47/)  
 
