@@ -4,7 +4,7 @@ import { Toast } from 'mint-ui'
 const SONGLIST = []
 let PAGE = 1
 const SIZE = 15
-const BASE_DOMAIN = 'http://39.108.6.47:8080'
+const BASE_DOMAIN = 'https://ggmusic.herokuapp.com'
 // 我自己的歌单UID
 let UID = '639d9d87232a328835'
 // 演唱者信息
